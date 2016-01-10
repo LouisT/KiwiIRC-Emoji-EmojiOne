@@ -1,0 +1,173 @@
+<!--
+
+   [{{:buildmode|UNKOWN}}] Plugin updated {{:date|UNKNOWN}} with {{:count|0}} emojis.
+
+-->
+<script src="{{:baseurl|https://cdn.jsdelivr.net/emojione/2.0.1}}/lib/js/emojione.min.js"></script>
+<link rel="stylesheet" href="{{:baseurl|https://cdn.jsdelivr.net/emojione/2.0.1}}/assets/css/emojione.min.css">
+<style>
+    #kiwi .emojiPreview {
+        position: absolute;
+        background: #3c3b37;
+        margin-right: 280px;
+        padding: 5px;
+        width: 67px;
+        height: 67px;
+        z-index: 1000;
+        border-bottom-left-radius: 1em;
+        border-top-left-radius: 1em;
+    }
+    #kiwi .emojiPreview img {
+        width: 100%;
+        height: 100%;
+    }
+    #kiwi .emojiMenu {
+        position: absolute;
+        background: #3c3b37;
+        padding: 5px;
+        padding-bottom: 0px;
+        margin-right: 13px;
+        width: 260px;
+        border-top-right-radius: 1em;
+        border-top-left-radius: 1em;
+        text-align: center;
+        z-index: 1000;
+    }
+    #kiwi .emojiMenu .emojiToggle {
+        display: inline-block;
+        width: 15px;
+        height: 25px;
+        cursor: pointer;
+        margin-right: 5px;
+        -webkit-user-select: none;
+        -moz-user-select: none;
+        -ms-user-select: none;
+        user-select: none;
+    }
+    #kiwi .emojiList {
+        position: absolute;
+        background: #3c3b37;
+        padding: 5px;
+        width: 273px;
+        overflow-y: scroll;
+        max-height: 15%;
+        z-index: 1000;
+        -webkit-user-select: none;
+        -moz-user-select: none;
+        -ms-user-select: none;
+        user-select: none;
+    }
+    #kiwi .emojiList .emoji {
+        display: inline-block;
+        width: 20px;
+        height: 20px;
+        cursor: pointer;
+        margin-right: 3px;
+        margin-left: 3px;
+    }
+</style>
+<script type="text/html" id="tmpl_emojilist">
+ <div class="emojiPreview">
+   <img class="emojiPreImg" src="{{:imghost|https://cdn.jsdelivr.net/emojione}}/assets/png/1f600.png" />
+ </div>
+ <div class="emojiMenu">{{:emojiToggles|NOT FOUND}}</div>
+ <div class="emojiList">{{:emojiTabs|NOT FOUND}}</div>
+</script>
+<script>
+var emojis = {{:emojis|{}}}
+(function() {
+        var $list = $($('#tmpl_emojilist').html()),
+            $icon = $('<a><img src="{{:imghost|https://cdn.jsdelivr.net/emojione}}/assets/png/1f600.png" alt="smile" style="width:23px;height:23px;" /></a>');
+        $icon.on('click', function(event) {
+            event.stopPropagation();
+            $list.appendTo($('#kiwi')).show().css({bottom: ($('.controlbox').outerHeight())+'px', right: 0});
+            function positionEmoji () {
+                     $height = $('.controlbox').outerHeight()+$('.emojiList').outerHeight();
+                     $('.emojiMenu').css({bottom: ($height-4)+'px', right: 0});
+                     $('.emojiPreview').css({bottom: ($height-77)+'px', right: 0});
+            };
+            positionEmoji();
+            if (!$list.attr('shown')) {
+               $list.attr('shown','true');
+               $(window).resize(function() {
+                   positionEmoji();
+               });
+               $epreimg = $('.emojiPreImg');
+               $epreimg.attr('src',$epreimg.attr('src')).attr('defimg',$epreimg.attr('src'));
+               $('.emojiToggle').click(function (event) {
+                   event.stopPropagation();
+                   $('.emojiList').scrollTop(0);
+                   $('.emojiToggle').children().css('width','20px').css('height','20px');
+                   $(this).children().css('width','20px').css('height','25px');
+                   var $target = $(this).attr('target'),
+                       $sel = $('#'+$target);
+                   $('.emojiTab').hide();
+                   $sel.show();
+                   if (!$sel.attr('shown')) {
+                      $sel.attr('shown','true');
+                      var pxl = 'data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7';
+                      _.each(emojis[$target],function (obj) {
+                          var src = '{{:imghost|https://cdn.jsdelivr.net/emojione}}/assets/png/'+obj.unicode+'.png';
+                          $sel.append('<img src="'+pxl+'" data-src="'+src+'" alt="e" data-text="'+obj.shortname+'" data-unicode="'+obj.unicode+'" class="emoji" />');
+                      });
+                      $('.emoji').hover(function () {
+                          $('.emojiPreImg').attr('src',$(this).attr('src'));
+                      },function(){
+                          $('.emojiPreImg').attr('src',$('.emojiPreImg').attr('defimg'));
+                      });
+                   }
+                   $('.emojiList').scroll();                  
+                   positionEmoji();
+               });
+               $('.emojiInit').trigger('click');
+            }
+            $('.emojiList, .emojiPreview, .emojiMenu').on('click',function (event) {
+                event.stopPropagation();
+            });
+            SimpleLazyLoader($('.emojiList'));
+        });
+        $list.on('click', '.emoji', function(event) {
+            event.stopPropagation();
+            var $inp = $('.controlbox .inp'),
+                txt = document.createElement("textarea");
+            txt.innerHTML = String($(this).data('unicode')).split('-').map(function(v) { return '&#x'+v+';'; }).join('');
+            $inp.val($inp.val() + txt.value + ' ');
+        });
+        $(document).on('click', function() {
+            $list.hide();
+        });
+        var control = kiwi.components.ControlInput();
+        control.addPluginIcon($icon);
+        kiwi.events.on('message:display', function (event, data) {
+            if (emojione && /^(action|privmsg|notice)$/i.test(data.message.type)) {
+               data.message.msg = emojione.toImage(data.message.msg);
+            }         
+        });
+        function SimpleLazyLoader ($elm) {
+                 if (!$elm.data('LazyLoaded')) {
+                    $elm.data('LazyLoaded', 'true');
+                    function inView (elm) {
+                             var rect = elm.getBoundingClientRect();
+                             return (
+                                    rect.top >= 0 && rect.left >= 0 &&
+                                    rect.bottom <= (window.innerHeight || document.documentElement.clientHeight) &&
+                                    rect.right <= (window.innerWidth || document.documentElement.clientWidth)
+                             );
+                    }
+                    function LazyLoader () {
+                             var images = $(".emojiList img[data-src]:visible"), item;
+                             if (images.length >= 1) {
+                                _.each(images, function (item) {
+                                    if (inView(item)) {
+                                       item.setAttribute("src", item.getAttribute("data-src"));
+                                       item.removeAttribute("data-src");
+                                    }
+                                });
+                             }
+                    }
+                    LazyLoader();
+                    $elm.scroll(LazyLoader);
+                 }
+        }
+})();
+</script>
