@@ -31,7 +31,7 @@ args.forEach(function (arg) {
     }
 });
 if (settings.local) {
-   if (settings.baseurl.indexOf('maxcdn') >= 0) {
+   if (settings.baseurl.indexOf('jsdelivr') >= 0) {
       settings.baseurl = "/kiwi/assets/emojione";
       console.log('\n\nNOTICE: Local install mode enabled without "--baseurl" - Default: "'+settings.baseurl+'"\n');
    }
