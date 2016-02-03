@@ -31,7 +31,7 @@ args.forEach(function (arg) {
     }
 });
 if (settings.local) {
-   if (settings.baseurl.indexOf('jsdelivr') >= 0) {
+   if (settings.baseurl.indexOf('maxcdn') >= 0) {
       settings.baseurl = "/kiwi/assets/emojione";
       console.log('\n\nNOTICE: Local install mode enabled without "--baseurl" - Default: "'+settings.baseurl+'"\n');
    }
@@ -52,10 +52,14 @@ if (fs.existsSync('./emojione/emoji.json')) {
             if (!mapped[data.category]) {
                mapped[data.category] = [];
             }
-            mapped[data.category].push({
+            var emoji = {
                 unicode: data.unicode,
                 shortname: data.shortname
-            });
+            };
+            if (data.unicode_alternates) {
+               emoji.alt = data.unicode_alternates;
+            }
+            mapped[data.category].push(emoji);
             count++;
          }
    });

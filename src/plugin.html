@@ -59,8 +59,8 @@
     }
     #kiwi .emojiList .emoji {
         display: inline-block;
-        width: 20px;
-        height: 20px;
+        width: 31px;
+        height: 31px;
         cursor: pointer;
         margin-right: 3px;
         margin-left: 3px;
@@ -74,7 +74,7 @@
  <div class="emojiList">{{:emojiTabs|NOT FOUND}}</div>
 </script>
 <script>
-var emojis = {{:emojis|{}}}
+var EmojisList = {{:emojis|{}}}
 (function() {
         var $list = $($('#tmpl_emojilist').html()),
             $icon = $('<a><img src="{{:imghost|https://cdn.jsdelivr.net/emojione}}/assets/png/1f600.png" alt="smile" style="width:23px;height:23px;" /></a>');
@@ -97,8 +97,8 @@ var emojis = {{:emojis|{}}}
                $('.emojiToggle').click(function (event) {
                    event.stopPropagation();
                    $('.emojiList').scrollTop(0);
-                   $('.emojiToggle').children().css('width','20px').css('height','20px');
-                   $(this).children().css('width','20px').css('height','25px');
+                   $('.emojiToggle').children().css('border-bottom','');
+                   $(this).children().css('border-bottom','1px solid white');
                    var $target = $(this).attr('target'),
                        $sel = $('#'+$target);
                    $('.emojiTab').hide();
@@ -106,9 +106,9 @@ var emojis = {{:emojis|{}}}
                    if (!$sel.attr('shown')) {
                       $sel.attr('shown','true');
                       var pxl = 'data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7';
-                      _.each(emojis[$target],function (obj) {
+                      _.each(EmojisList[$target],function (obj) {
                           var src = '{{:imghost|https://cdn.jsdelivr.net/emojione}}/assets/png/'+obj.unicode+'.png';
-                          $sel.append('<img src="'+pxl+'" data-src="'+src+'" alt="e" data-text="'+obj.shortname+'" data-unicode="'+obj.unicode+'" class="emoji" />');
+                          $sel.append('<img src="'+pxl+'" data-src="'+src+'" alt="e" data-text="'+obj.shortname+'" data-unicode="'+obj[(obj.alt?'alt':'unicode')]+'" class="emoji" />');
                       });
                       $('.emoji').hover(function () {
                           $('.emojiPreImg').attr('src',$(this).attr('src'));
@@ -128,10 +128,8 @@ var emojis = {{:emojis|{}}}
         });
         $list.on('click', '.emoji', function(event) {
             event.stopPropagation();
-            var $inp = $('.controlbox .inp'),
-                txt = document.createElement("textarea");
-            txt.innerHTML = String($(this).data('unicode')).split('-').map(function(v) { return '&#x'+v+';'; }).join('');
-            $inp.val($inp.val() + txt.value + ' ');
+            var $inp = $('.controlbox .inp');
+            $inp.val($inp.val()+' '+$(this).data('text')+ ' ');
         });
         $(document).on('click', function() {
             $list.hide();
@@ -143,6 +141,13 @@ var emojis = {{:emojis|{}}}
                data.message.msg = emojione.toImage(data.message.msg);
             }         
         });
+        kiwi.events.on('command', function (event, data) {
+            if (emojione && data.command === 'msg') {
+               data.params = _.map(data.params, function (str) {
+                   return emojione.shortnameToUnicode(str);
+               });
+            }
+        });      
         function SimpleLazyLoader ($elm) {
                  if (!$elm.data('LazyLoaded')) {
                     $elm.data('LazyLoaded', 'true');
@@ -155,12 +160,12 @@ var emojis = {{:emojis|{}}}
                              );
                     }
                     function LazyLoader () {
-                             var images = $(".emojiList img[data-src]:visible"), item;
+                             var images = $('.emojiList img[data-src]:visible'), item;
                              if (images.length >= 1) {
                                 _.each(images, function (item) {
                                     if (inView(item)) {
-                                       item.setAttribute("src", item.getAttribute("data-src"));
-                                       item.removeAttribute("data-src");
+                                       item.setAttribute('src', item.getAttribute('data-src'));
+                                       item.removeAttribute('data-src');
                                     }
                                 });
                              }
