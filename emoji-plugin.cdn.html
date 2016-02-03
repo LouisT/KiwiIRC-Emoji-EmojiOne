@@ -1,6 +1,6 @@
 <!--
 
-   [CDN Install] Plugin updated Tue Feb 02 2016 19:56:10 GMT-0500 (EST) with 1619 emojis.
+   [CDN Install] Plugin updated Tue Feb 02 2016 20:30:15 GMT-0500 (EST) with 1619 emojis.
 
 -->
 <script src="//cdn.jsdelivr.net/emojione/2.0.1/lib/js/emojione.min.js"></script>
@@ -156,7 +156,7 @@ var EmojisList = {
         $list.on('click', '.emoji', function(event) {
             event.stopPropagation();
             var $inp = $('.controlbox .inp');
-            $inp.val($inp.val()+' '+$(this).data('text')+ ' ');
+            $inp.val($inp.val()+' '+$(this).data('text'));
         });
         $(document).on('click', function() {
             $list.hide();

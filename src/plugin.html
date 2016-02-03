@@ -129,7 +129,7 @@ var EmojisList = {{:emojis|{}}}
         $list.on('click', '.emoji', function(event) {
             event.stopPropagation();
             var $inp = $('.controlbox .inp');
-            $inp.val($inp.val()+' '+$(this).data('text')+ ' ');
+            $inp.val($inp.val()+' '+$(this).data('text'));
         });
         $(document).on('click', function() {
             $list.hide();
