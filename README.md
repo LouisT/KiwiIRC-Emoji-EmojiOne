@@ -2,7 +2,7 @@
 
 This plugin uses the [emoji] set [EmojiOne]! Would you prefer [Twemoji]? Check out [KiwiIRC-Emoji-Twemoji]!
 
-[EmojiOne] has a CDN hosted version, provided by CDNjs.
+[EmojiOne] has a CDN hosted version, provided by [jsDelivr].
 Therefore you can run [emoji-plugin.cdn.html](emoji-plugin.cdn.html) without any changes.
 
 ![Example](https://github.com/LouisT/KiwiIRC-Emoji-EmojiOne/blob/master/assets/KiwiIRC-Emoji-EmojiOne.gif)
@@ -38,3 +38,4 @@ See http://creativecommons.org/licenses/by-sa/4.0/ for [EmojiOne] graphics licen
 [EmojiOne]: https://github.com/Ranks/emojione
 [KiwiIRC-Emoji-Twemoji]: https://github.com/LouisT/KiwiIRC-Emoji-Twemoji
 [emoji]: https://en.wikipedia.org/wiki/Emoji
+[jsDelivr]: https://www.jsdelivr.com/
