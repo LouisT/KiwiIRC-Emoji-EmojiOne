@@ -8,20 +8,27 @@ var fs = require('fs'),
     path = require('path'),
     args = process.argv.slice(2);
 
-if (!fs.existsSync('./emojione/')) {
-   console.log('EmojiOne is missing! Install with git and run again:\n\n   git clone https://github.com/Ranks/emojione.git');
+if (!fs.existsSync('./emojione/package.json')) {
+   console.log('\nEmojiOne is missing! Install with git and run again:\n\n   git clone https://github.com/Ranks/emojione.git\n');
    process.exit(1);
 }
+
+/*
+  Load the EmojiOne package.json to get version information.
+*/
+var emojione = require('./emojione/package.json');
 
 /*
   Parse argv for settings.
 */
 var settings = {
     overwrite: false,
-    baseurl: '//cdn.jsdelivr.net/emojione/2.0.1',
+    baseurl: '//cdn.jsdelivr.net/emojione/'+emojione.version,
     imghost: '//cdn.jsdelivr.net/emojione',
-    local: false
+    local: false,
+    version: emojione.version
 };
+
 args.forEach(function (arg) {
     var match = null;
     if ((match = arg.match(/--baseurl=(.+)/i))) {
@@ -31,9 +38,9 @@ args.forEach(function (arg) {
     }
 });
 if (settings.local) {
-   if (settings.baseurl.indexOf('maxcdn') >= 0) {
+   if (settings.baseurl.indexOf('jsdelivr') >= 0) {
       settings.baseurl = "/kiwi/assets/emojione";
-      console.log('\n\nNOTICE: Local install mode enabled without "--baseurl" - Default: "'+settings.baseurl+'"\n');
+      console.log('\nNOTICE: Local install mode enabled without "--baseurl" - Default: "'+settings.baseurl+'"');
    }
    settings.imghost = settings.baseurl;
    console.log('\nPlease copy "./emojione/" to: /client/assets/emojione/');
@@ -87,13 +94,13 @@ if (fs.existsSync('./emojione/emoji.json')) {
    var plug = 'emoji-plugin.'+(settings.local?'local':'cdn')+'.html';
    fs.writeFileSync('./'+plug,formatter(data,format));
    if (!fs.existsSync('./'+plug)) {
-      console.warn('Failed installing pluign to '+paths.plugin);
+      console.warn('\nFailed installing pluign to '+paths.plugin+'\n');
     } else {
-      console.log('\nPlugin created: '+plug+'\n');
+      console.log('\nPlugin created: '+plug+' (EmojiOne: '+settings.version+')\n');
    }
 
  } else {
-   console.log('Could not find emoji.json!');
+   console.log('\nCould not find emoji.json!\n');
    process.exit(1);
 }
 
