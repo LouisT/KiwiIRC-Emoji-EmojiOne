@@ -21,7 +21,7 @@ conf.client_plugins = [
 
 Plugin Generation
 -
-If you would prefer to host a copy of the [EmojiOne] files yourself, you can build a copy of the plugin using `./build-plugin.js --local`. If you wish to change the location of [Twemoji] files you can do so with `--baseurl=<URL or Path>`; useful if your Kiwi IRC install is not at `http://domain.tld/kiwi/` or you want to use a different CDN.
+If you would prefer to host a copy of the [EmojiOne] files yourself, you can build a copy of the plugin using `./build-plugin.js --local`. If you wish to change the location of [EmojiOne] files you can do so with `--baseurl=<URL or Path>`; useful if your Kiwi IRC install is not at `http://domain.tld/kiwi/` or you want to use a different CDN.
 
 In order to build the plugin, you will need to clone the [EmojiOne] repository relative to `build-plugin.js` using `git clone https://github.com/Ranks/emojione.git`
 
