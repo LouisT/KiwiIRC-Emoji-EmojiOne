@@ -107,8 +107,8 @@ var EmojisList = {{:emojis|{}}}
                       $sel.attr('shown','true');
                       var pxl = 'data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7';
                       _.each(EmojisList[$target],function (obj) {
-                          var src = '{{:imghost|https://cdn.jsdelivr.net/emojione}}/assets/png/'+obj.unicode+'.png';
-                          $sel.append('<img src="'+pxl+'" data-src="'+src+'" alt="e" data-text="'+obj.shortname+'" data-unicode="'+obj[(obj.alt?'alt':'unicode')]+'" class="emoji" />');
+                          var src = '{{:imghost|https://cdn.jsdelivr.net/emojione}}/assets/png/'+obj.u+'.png';
+                          $sel.append('<img src="'+pxl+'" data-src="'+src+'" alt="e" data-text="'+obj.s+'" data-unicode="'+obj[(obj.a?'a':'u')]+'" class="emoji" />');
                       });
                       $('.emoji').hover(function () {
                           $('.emojiPreImg').attr('src',$(this).attr('src'));
@@ -116,7 +116,7 @@ var EmojisList = {{:emojis|{}}}
                           $('.emojiPreImg').attr('src',$('.emojiPreImg').attr('defimg'));
                       });
                    }
-                   $('.emojiList').scroll();                  
+                   $('.emojiList').scroll();
                    positionEmoji();
                });
                $('.emojiInit').trigger('click');
@@ -139,15 +139,15 @@ var EmojisList = {{:emojis|{}}}
         kiwi.events.on('message:display', function (event, data) {
             if (emojione && /^(action|privmsg|notice)$/i.test(data.message.type)) {
                data.message.msg = emojione.toImage(data.message.msg);
-            }         
+            }
         });
         kiwi.events.on('command', function (event, data) {
             if (emojione && data.command === 'msg') {
                data.params = _.map(data.params, function (str) {
-                   return emojione.shortnameToUnicode(str);
+                   return emojione.{{:method|shortnameToUnicode}}(str);
                });
             }
-        });      
+        });
         function SimpleLazyLoader ($elm) {
                  if (!$elm.data('LazyLoaded')) {
                     $elm.data('LazyLoaded', 'true');

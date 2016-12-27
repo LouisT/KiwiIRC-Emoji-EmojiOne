@@ -5,6 +5,8 @@ This plugin uses the [emoji] set [EmojiOne]! Would you prefer [Twemoji]? Check o
 [EmojiOne] has a CDN hosted version, provided by [jsDelivr].
 Therefore you can run [emoji-plugin.cdn.html](emoji-plugin.cdn.html) without any changes.
 
+#### NOTE: Due to some languages not supporting the unicode encoding, this plugin wont work out of the box for everyone. As a workaround, please try [emoji-plugin.sn.cdn.html](emoji-plugin.sn.cdn.html).
+
 ![Example](https://github.com/LouisT/KiwiIRC-Emoji-EmojiOne/blob/master/assets/KiwiIRC-Emoji-EmojiOne.gif)
 
 Usage
@@ -22,6 +24,8 @@ conf.client_plugins = [
 Plugin Generation
 -
 If you would prefer to host a copy of the [EmojiOne] files yourself, you can build a copy of the plugin using `./build-plugin.js --local`. If you wish to change the location of [EmojiOne] files you can do so with `--baseurl=<URL or Path>`; useful if your Kiwi IRC install is not at `http://domain.tld/kiwi/` or you want to use a different CDN.
+
+#### NOTE: Due to some languages not supporting the unicode encoding, this plugin wont work out of the box for everyone. As a workaround, please try building with `--use-shortnames`.
 
 In order to build the plugin, you will need to clone the [EmojiOne] repository relative to `build-plugin.js` using `git clone https://github.com/Ranks/emojione.git`
 

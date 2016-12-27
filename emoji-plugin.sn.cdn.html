@@ -1,6 +1,6 @@
 <!--
 
-   [CDN Install] Plugin updated Tue Dec 27 2016 21:24:03 GMT+0000 (UTC) with 1815 emojis.
+   [CDN Install] Plugin updated Tue Dec 27 2016 21:24:02 GMT+0000 (UTC) with 1815 emojis.
 
 -->
 <script src="//cdn.jsdelivr.net/emojione/2.2.7/lib/js/emojione.min.js"></script>
@@ -174,7 +174,7 @@ var EmojisList = {
         kiwi.events.on('command', function (event, data) {
             if (emojione && data.command === 'msg') {
                data.params = _.map(data.params, function (str) {
-                   return emojione.shortnameToUnicode(str);
+                   return emojione.toShort(str);
                });
             }
         });

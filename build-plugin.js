@@ -26,7 +26,8 @@ var settings = {
     baseurl: '//cdn.jsdelivr.net/emojione/'+emojione.version,
     imghost: '//cdn.jsdelivr.net/emojione',
     local: false,
-    version: emojione.version
+    version: emojione.version,
+    method: 'shortnameToUnicode'
 };
 
 args.forEach(function (arg) {
@@ -35,6 +36,9 @@ args.forEach(function (arg) {
        settings.baseurl = match[1];
      } else if ((match = arg.match(/--local/i))) {
        settings.local = true;
+     } else if ((match = arg.match(/--use-shortnames?/i))) {
+       settings.method = 'toShort';
+       console.log('\nNOTICE: Shortname mode enabled; will not be converting to unicode.');
     }
 });
 if (settings.local) {
@@ -45,7 +49,6 @@ if (settings.local) {
    settings.imghost = settings.baseurl;
    console.log('\nPlease copy "./emojione/" to: /client/assets/emojione/');
 }
-
 if (fs.existsSync('./emojione/emoji.json')) {
    var json = require('./emojione/emoji.json');
 
@@ -60,11 +63,11 @@ if (fs.existsSync('./emojione/emoji.json')) {
                mapped[data.category] = [];
             }
             var emoji = {
-                unicode: data.unicode,
-                shortname: data.shortname
+                u: data.unicode,
+                s: data.shortname
             };
             if (data.unicode_alternates) {
-               emoji.alt = data.unicode_alternates;
+               emoji.a = data.unicode_alternates;
             }
             mapped[data.category].push(emoji);
             count++;
@@ -74,13 +77,14 @@ if (fs.existsSync('./emojione/emoji.json')) {
    Object.keys(mapped).forEach(function (key, idx) {
         stringed.push('    '+key+': '+JSON.stringify(mapped[key]));
         toggles.push(['    <span class="emojiToggle'+(idx==0?' emojiInit':'')+'" target="'+key+'">',
-                      '<img src="'+settings.imghost+'/assets/png/'+mapped[key][0].unicode+'.png" width="20px" height="20px" title="Category: '+key+'" />',
+                      '<img src="'+settings.imghost+'/assets/png/'+mapped[key][0].u+'.png" width="20px" height="20px" title="Category: '+key+'" />',
                       '</span>'].join(''));
         tabs.push('    <div class="emojiTab" id="'+key+'"></div>');
    });
 
    var data = fs.readFileSync('./src/plugin.html').toString();
    var format = {
+       method: settings.method,
        baseurl: settings.baseurl,
        imghost: settings.imghost,
        buildmode: (settings.local?'Local Install':'CDN Install'),
@@ -91,7 +95,7 @@ if (fs.existsSync('./emojione/emoji.json')) {
        emojis: '{\n'+stringed.join(',\n')+'\n};',
    };
 
-   var plug = 'emoji-plugin.'+(settings.local?'local':'cdn')+'.html';
+   var plug = 'emoji-plugin.'+(settings.method=='toShort'?'sn.':'')+(settings.local?'local':'cdn')+'.html';
    fs.writeFileSync('./'+plug,formatter(data,format));
    if (!fs.existsSync('./'+plug)) {
       console.warn('\nFailed installing pluign to '+paths.plugin+'\n');
